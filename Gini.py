@@ -29,5 +29,5 @@ integralTotal = integral(1) - integral(0)
 Gini = (0.5 - integralTotal) * 2
 
 GiniPorcentagem = Gini * 100
-
+print(polinomio)
 print(f"O coeficiente de Gini para a curva informada é: {Gini:.4f} ({GiniPorcentagem:.2f}%).")
