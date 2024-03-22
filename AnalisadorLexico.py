@@ -5,8 +5,8 @@ PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else",
                        "for", "while", "input", "print", "main", "return"]
 
 # Expressões regulares para tokens
-REGEX_NUM_INT = r"[0-9]+(?!\.)"
-REGEX_NUM_DEC = r"[0-9]+(\.[0-9]+)?"
+REGEX_NUM_INT = r"-?[0-9]+(?!\.)"
+REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?"
 REGEX_ID = r"[a-zA-Z_]\w*"
 REGEX_TEXTO = r'\"(.*?)\"'
 REGEX_OPERADORES = r"=|\+|\-|\*|/|%|&|\||!|>=|<=|!=|=="
@@ -21,7 +21,8 @@ TOKEN_TIPOS = {
     "TEXTO": "Constante de Texto",
     "OPERADORES": "Operador",
     "SIMBOLOS_ESPECIAIS": "Símbolo Especial",
-    "COMENTARIO": "Comentário"
+    "COMENTARIO": "Comentário",
+    "PALAVRA_RESERVADA": "Palavra Reservada"
 }
 
 def analisar_lexema(lexema):
@@ -38,10 +39,11 @@ def analisar_lexema(lexema):
         return ("PALAVRA_RESERVADA", lexema)
     elif re.match(REGEX_NUM_INT, lexema):
         # Remove trailing characters before conversion
-        lexema_int = re.sub(r'[^\d]', '', lexema) 
+        lexema_int = re.sub(r'[^\d-]', '', lexema) 
         return ("NUM_INT", int(lexema_int))
     elif re.match(REGEX_NUM_DEC, lexema):
-        lexema_dec = re.sub(r'[^\d.]', '', lexema) 
+        # Remove trailing characters before conversion
+        lexema_dec = re.sub(r'[^\d.-]', '', lexema) 
         return ("NUM_DEC", float(lexema_dec))
     elif re.match(REGEX_ID, lexema):
         return ("ID", lexema)
@@ -55,6 +57,8 @@ def analisar_lexema(lexema):
         return ("COMENTARIO", lexema)
     else:
         return ("ERRO", "Lexema inválido: " + lexema)
+
+
 
 
 def analisar_codigo(codigo):
@@ -115,38 +119,7 @@ def analisar_codigo(codigo):
 def main():
     # Código-fonte de exemplo
     codigo = """
-    def soma_numeros():
-        # Solicita ao usuário que insira dois números
-        num1 = float(input("Digite o primeiro número: "))
-        num2 = float(input("Digite o segundo número: "))
-        num3 = 4.6
-        
-        # Calcula a soma dos números
-        resultado = num1 + num2
-        
-        # Imprime a soma
-        print("A soma dos dois números é:", resultado)
-
-    def media_tres_numeros():
-        # Solicita ao usuário que insira três números
-        num1 = float(input("Digite o primeiro número: "))
-        num2 = float(input("Digite o segundo número: "))
-        num3 = float(input("Digite o terceiro número: "))
-        
-        # Calcula a média dos três números
-        media = (num1 + num2 + num3) / 3
-        
-        # Imprime a média
-        print("A média dos três números é:", media)
-
-    # Chama a função para calcular a soma dos números
-    soma_numeros()
-
-    # Chama a função para calcular a média dos três números
-    media_tres_numeros()
-
-    # Comentário de exemplo
-    # Este é um comentário simples
+    
   """
 
     tokens = analisar_codigo(codigo)
