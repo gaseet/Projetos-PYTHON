@@ -119,7 +119,34 @@ def analisar_codigo(codigo):
 def main():
     # Código-fonte de exemplo
     codigo = """
-    
+    def soma_numeros():
+        # Solicita ao usuário que insira dois números
+        num1 = float(input("Digite o primeiro número: "))
+        num2 = float(input("Digite o segundo número: "))
+        num3 = 4.6
+        
+        # Calcula a soma dos números
+        resultado = num1 + num2
+        
+        # Imprime a soma
+        print("A soma dos dois números é:", resultado)
+    def media_tres_numeros():
+        # Solicita ao usuário que insira três números
+        num1 = float(input("Digite o primeiro número: "))
+        num2 = float(input("Digite o segundo número: "))
+        num3 = float(input("Digite o terceiro número: "))
+        
+        # Calcula a média dos três números
+        media = (num1 + num2 + num3) / 3
+        
+        # Imprime a média
+        print("A média dos três números é:", media)
+    # Chama a função para calcular a soma dos números
+    soma_numeros()
+    # Chama a função para calcular a média dos três números
+    media_tres_numeros()
+    # Comentário de exemplo
+    # Este é um comentário simples
   """
 
     tokens = analisar_codigo(codigo)
