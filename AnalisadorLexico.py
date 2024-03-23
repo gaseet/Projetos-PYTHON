@@ -2,11 +2,11 @@ import re
 
 # Lista de palavras reservadas
 PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else",
-                       "for", "while", "input", "print", "main", "return"]
+                       "for", "while", "input", "print", "main", "return", "try"]
 
 # Expressões regulares para tokens
 REGEX_NUM_INT = r"-?[0-9]+(?!\.)"
-REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?"
+REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?+(?!\.)"
 REGEX_ID = r"[a-zA-Z_]\w*"
 REGEX_TEXTO = r'\"(.*?)\"'
 REGEX_OPERADORES = r"=|\+|\-|\*|/|%|&|\||!|>=|<=|!=|=="
@@ -38,11 +38,11 @@ def analisar_lexema(lexema):
     if lexema in PALAVRAS_RESERVADAS:
         return ("PALAVRA_RESERVADA", lexema)
     elif re.match(REGEX_NUM_INT, lexema):
-        # Remove trailing characters before conversion
+        # Remove caracteres adicionais antes da conversão
         lexema_int = re.sub(r'[^\d-]', '', lexema) 
         return ("NUM_INT", int(lexema_int))
     elif re.match(REGEX_NUM_DEC, lexema):
-        # Remove trailing characters before conversion
+        # Remove caracteres adicionais antes da conversão
         lexema_dec = re.sub(r'[^\d.-]', '', lexema) 
         return ("NUM_DEC", float(lexema_dec))
     elif re.match(REGEX_ID, lexema):
@@ -58,9 +58,6 @@ def analisar_lexema(lexema):
     else:
         return ("ERRO", "Lexema inválido: " + lexema)
 
-
-
-
 def analisar_codigo(codigo):
     """
     Analisa um código-fonte e gera uma sequência de tokens.
@@ -71,8 +68,8 @@ def analisar_codigo(codigo):
     Returns:
         Uma lista de tokens.
     """
-    tokens = []
-    lexema = ""
+    tokens = []  # Inicializa uma lista vazia para armazenar os tokens
+    lexema = ""  # Inicializa uma string vazia para armazenar os lexemas temporários
     in_string = False  # Indica se estamos dentro de uma string
 
     # Divida o código-fonte em linhas
@@ -81,7 +78,7 @@ def analisar_codigo(codigo):
     for linha in linhas:
         # Se a linha começar com '#', considere-a como um comentário
         if linha.strip().startswith('#'):
-            tokens.append(analisar_lexema(linha.strip()))
+            tokens.append(analisar_lexema(linha.strip()))  # Analisa o comentário como um token
             continue
 
         # Loop através dos caracteres da linha
@@ -92,61 +89,61 @@ def analisar_codigo(codigo):
             if caractere in ['"', "'"]:
                 # Inverte o status de in_string quando encontramos uma aspa
                 in_string = not in_string
+                lexema += caractere
 
-            if not in_string and caractere in [" ", "\t"]:
+            elif in_string:
+                lexema += caractere
+
+                # Verifica se terminamos uma string
+                if len(lexema) >= 2 and lexema[0] == lexema[-1]:
+                    tokens.append(analisar_lexema(lexema))  # Analisa a string como um token
+                    lexema = ""  # Limpa o lexema temporário
+                    in_string = False  # Reinicia o status de string
+
+            elif caractere in [" ", "\t", "(", ")", "[", "]", "{", "}", ",", ";"]:
                 if lexema:
-                    tokens.append(analisar_lexema(lexema))
-                    lexema = ""
+                    tokens.append(analisar_lexema(lexema))  # Analisa o lexema temporário como um token
+                    lexema = ""  # Limpa o lexema temporário
+                if caractere.strip():
+                    tokens.append(analisar_lexema(caractere))  # Analisa caracteres especiais como tokens separados
+
+            elif caractere == ":":
+                if lexema:
+                    tokens.append(analisar_lexema(lexema))  # Analisa o lexema temporário como um token
+                    lexema = ""  # Limpa o lexema temporário
+                tokens.append(analisar_lexema(caractere))  # Analisa ":" como um token separado
+
             else:
-                # Verifica se o caractere é um símbolo especial
-                if caractere in ['(', ')', '[', ']', '{', '}', ',', ';']:
-                    if lexema:
-                        tokens.append(analisar_lexema(lexema))
-                        lexema = ""
-                    tokens.append(analisar_lexema(caractere))
-                else:
-                    lexema += caractere
+                lexema += caractere  # Adiciona o caractere ao lexema temporário
 
             i += 1
 
         if lexema:
-            tokens.append(analisar_lexema(lexema))
-            lexema = ""
+            tokens.append(analisar_lexema(lexema))  # Analisa o lexema final da linha como um token
+            lexema = ""  # Limpa o lexema temporário
 
-    return tokens
+    return tokens  # Retorna a lista de tokens gerada
 
 
 def main():
-    # Código-fonte de exemplo
+    # Código-fonte a ser analisado
     codigo = """
-    def soma_numeros():
-        # Solicita ao usuário que insira dois números
-        num1 = float(input("Digite o primeiro número: "))
-        num2 = float(input("Digite o segundo número: "))
-        num3 = 4.6
-        
-        # Calcula a soma dos números
-        resultado = num1 + num2
-        
-        # Imprime a soma
-        print("A soma dos dois números é:", resultado)
-    def media_tres_numeros():
-        # Solicita ao usuário que insira três números
-        num1 = float(input("Digite o primeiro número: "))
-        num2 = float(input("Digite o segundo número: "))
-        num3 = float(input("Digite o terceiro número: "))
-        
-        # Calcula a média dos três números
-        media = (num1 + num2 + num3) / 3
-        
-        # Imprime a média
-        print("A média dos três números é:", media)
-    # Chama a função para calcular a soma dos números
-    soma_numeros()
-    # Chama a função para calcular a média dos três números
-    media_tres_numeros()
-    # Comentário de exemplo
-    # Este é um comentário simples
+    def verificar_idade(idade):
+            if idade >= 18:
+                return "Maior de idade"
+            else:
+                return "Menor de idade"
+
+    def main():
+            try:
+                idade = int(input("Digite sua idade: "))
+                resultado = verificar_idade(idade)
+                print(resultado)
+            except ValueError:
+                print("Por favor, digite um número válido para a idade.")
+
+    if __name__ == "__main__":
+        main()
   """
 
     tokens = analisar_codigo(codigo)
