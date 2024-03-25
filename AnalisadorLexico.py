@@ -9,7 +9,7 @@ REGEX_NUM_INT = r"-?[0-9]+(?!\.)"
 REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?+(?!\.)"
 REGEX_ID = r"[a-zA-Z_]\w*"
 REGEX_TEXTO = r'\"(.*?)\"'
-REGEX_OPERADORES = r"=|\+|\-|\*|/|%|&|\||!|>=|<=|!=|=="
+REGEX_OPERADORES = r"=|<|>|\+|\-|\*|/|%|&|\||!|>=|<=|!=|=="
 REGEX_SIMBOLOS_ESPECIAIS = r"[\(\)\[\]\{\},;:]"
 REGEX_COMENTARIOS = r'(#.*)'
 
@@ -100,18 +100,12 @@ def analisar_codigo(codigo):
                     lexema = ""  # Limpa o lexema temporário
                     in_string = False  # Reinicia o status de string
 
-            elif caractere in [" ", "\t", "(", ")", "[", "]", "{", "}", ",", ";"]:
+            elif caractere in [" ", "\t", "(", ")", "[", "]", "{", "}", ",", ";", ":"]:
                 if lexema:
                     tokens.append(analisar_lexema(lexema))  # Analisa o lexema temporário como um token
                     lexema = ""  # Limpa o lexema temporário
                 if caractere.strip():
                     tokens.append(analisar_lexema(caractere))  # Analisa caracteres especiais como tokens separados
-
-            elif caractere == ":":
-                if lexema:
-                    tokens.append(analisar_lexema(lexema))  # Analisa o lexema temporário como um token
-                    lexema = ""  # Limpa o lexema temporário
-                tokens.append(analisar_lexema(caractere))  # Analisa ":" como um token separado
 
             else:
                 lexema += caractere  # Adiciona o caractere ao lexema temporário
