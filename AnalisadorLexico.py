@@ -2,13 +2,13 @@ import re
 
 # Lista de palavras reservadas
 PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else",
-                       "for", "while", "input", "print", "main", "return", "try"]
+                       "for", "while", "input", "print", "main", "return", "try", "and", "or"]
 
 # Expressões regulares para tokens
 REGEX_NUM_INT = r"-?[0-9]+(?!\.)"
 REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?+(?!\.)"
 REGEX_ID = r"[a-zA-Z_]\w*"
-REGEX_TEXTO = r'\"(.*?)\"'
+REGEX_TEXTO = r'\'(.*?)\'|\"(.*?)\"'
 REGEX_OPERADORES = r"=|<|>|\+|\-|\*|/|%|&|\||!|>=|<=|!=|=="
 REGEX_SIMBOLOS_ESPECIAIS = r"[\(\)\[\]\{\},;:]"
 REGEX_COMENTARIOS = r'(#.*)'
