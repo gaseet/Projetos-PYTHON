@@ -1,7 +1,7 @@
 import re
 
 # Lista de palavras reservadas
-PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else",
+PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else", "def",
                        "for", "while", "input", "print", "main", "return", "try", "and", "or"]
 
 # Expressões regulares para tokens
