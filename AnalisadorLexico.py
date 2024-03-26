@@ -1,15 +1,15 @@
 import re
 
 # Lista de palavras reservadas
-PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else", "def",
-                       "for", "while", "input", "print", "main", "return", "try", "and", "or"]
+PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else",
+                       "for", "while", "input", "println", "main", "return", "try", "and", "or"]
 
 # Expressões regulares para tokens
 REGEX_NUM_INT = r"-?[0-9]+(?!\.)$"
 REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?+(?!\.)$"
 REGEX_ID = r"[a-zA-Z_]\w*"
 REGEX_TEXTO = r'\'(.*?)\'|\"(.*?)\"'
-REGEX_OPERADORES = r"=|<|>|\+|\-|\*|/|%|&|\||!|>=|<=|!=|=="
+REGEX_OPERADORES = r"=|<|>|\+|\-|\*|/|%|&|\||!|>=|<=|!=|==|&&|\|\|"
 REGEX_SIMBOLOS_ESPECIAIS = r"[\(\)\[\]\{\},;:]"
 REGEX_COMENTARIOS = r'(#.*)'
 
@@ -118,22 +118,41 @@ def analisar_codigo(codigo):
 def main():
     # Código-fonte a ser analisado
     codigo = """
-    def verificar_idade(idade):
-            if idade >= 18:
-                return "Maior de idade"
-            else:
-                return "Menor de idade"
+int main() {
+int numero1 = 123;
+int numero2 = 456;
+int resultado = numero1 + numero2;
+return resultado;
+}
+float calcularMedia(float nota1, float nota2) {
+float media = (nota1 + nota2) / 2.0;
+if (media >= 6.0) {
+println("Aprovado!");
+} else {
+println("Reprovado.");
+}
+return media;
+}
+void saudacao() {
+char mensagem[] = "Olá, mundo!";
+int numero = 42;
+println(mensagem);
+println("O número é: " + numero);
+}
 
-    def main():
-            try:
-                idade = int(input("Digite sua idade: "))
-                resultado = verificar_idade(idade)
-                print(resultado)
-            except ValueError:
-                print("Por favor, digite um número válido para a idade.")
 
-    if __name__ == "__main__":
-        main()
+// Este é um comentário de linha.
+int dobrar(int x) {
+/* Este é um comentário
+de múltiplas linhas. */
+return x * 2;
+}
+
+void imprimirValores(int valores[]) {
+for (int i = 0; i < valores.length; i++) {
+println("Valor[" + i + "] = " + valores[i]);
+}
+}
   """
 
     tokens = analisar_codigo(codigo)
