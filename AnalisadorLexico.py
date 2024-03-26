@@ -1,12 +1,12 @@
 import re
 
 # Lista de palavras reservadas
-PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else",
+PALAVRAS_RESERVADAS = ["int", "float", "char", "boolean", "void", "if", "else", "def",
                        "for", "while", "input", "print", "main", "return", "try", "and", "or"]
 
 # Expressões regulares para tokens
-REGEX_NUM_INT = r"-?[0-9]+(?!\.)"
-REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?+(?!\.)"
+REGEX_NUM_INT = r"-?[0-9]+(?!\.)$"
+REGEX_NUM_DEC = r"-?[0-9]+(\.[0-9]+)?+(?!\.)$"
 REGEX_ID = r"[a-zA-Z_]\w*"
 REGEX_TEXTO = r'\'(.*?)\'|\"(.*?)\"'
 REGEX_OPERADORES = r"=|<|>|\+|\-|\*|/|%|&|\||!|>=|<=|!=|=="
@@ -38,13 +38,9 @@ def analisar_lexema(lexema):
     if lexema in PALAVRAS_RESERVADAS:
         return ("PALAVRA_RESERVADA", lexema)
     elif re.match(REGEX_NUM_INT, lexema):
-        # Remove caracteres adicionais antes da conversão
-        lexema_int = re.sub(r'[^\d-]', '', lexema) 
-        return ("NUM_INT", int(lexema_int))
+        return ("NUM_INT", lexema)
     elif re.match(REGEX_NUM_DEC, lexema):
-        # Remove caracteres adicionais antes da conversão
-        lexema_dec = re.sub(r'[^\d.-]', '', lexema) 
-        return ("NUM_DEC", float(lexema_dec))
+        return ("NUM_DEC", lexema)
     elif re.match(REGEX_ID, lexema):
         return ("ID", lexema)
     elif re.match(REGEX_TEXTO, lexema):
